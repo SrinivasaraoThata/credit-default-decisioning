@@ -8,7 +8,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 POLICY_DOCS_DIR = Path(__file__).resolve().parent.parent / "data" / "policy_docs"
 CHROMA_DIR = Path(__file__).resolve().parent.parent / ".chroma"
 COLLECTION_NAME = "credit_policy"
-EMBEDDING_MODEL = "models/text-embedding-004"
+EMBEDDING_MODEL = "models/gemini-embedding-001"
 
 _collection = None
 
