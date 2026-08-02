@@ -11,6 +11,7 @@ openpyxl
 fastapi
 uvicorn
 pydantic
+python-dotenv
 
 langgraph
 langchain-google-genai
