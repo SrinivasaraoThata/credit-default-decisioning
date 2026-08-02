@@ -10,7 +10,7 @@ from agents.decision_agent import citable_factors, risk_band_for
 from agents.policy_store import query_policy
 from agents.schemas import PipelineState
 
-CHAT_MODEL = "gemini-2.0-flash"
+CHAT_MODEL = "gemini-3.6-flash"
 
 SYSTEM_PROMPT = (
     "You are a credit policy explanation assistant for a bank. Explain a "
