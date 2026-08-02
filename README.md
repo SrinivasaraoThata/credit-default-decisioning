@@ -1,6 +1,6 @@
 # Credit Default Risk Model + Agentic Decisioning Layer
 
-Work in progress. See [CLAUDE.md](CLAUDE.md) for the full project plan.
+Work in progress.
 
 ## Problem statement
 
