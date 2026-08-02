@@ -42,6 +42,24 @@ def _build_user_prompt(state: PipelineState, excerpts: list[tuple[str, str]]) ->
     )
 
 
+def _extract_text(response) -> str:
+    content = response.content if hasattr(response, "content") else response
+
+    if isinstance(content, str):
+        return content
+
+    if isinstance(content, list):
+        parts = []
+        for block in content:
+            if isinstance(block, str):
+                parts.append(block)
+            elif isinstance(block, dict) and block.get("type") == "text":
+                parts.append(block.get("text", ""))
+        return "".join(parts)
+
+    return str(content)
+
+
 def run_policy_explanation(state: PipelineState, llm=None, retriever=None) -> PipelineState:
     retriever = retriever or query_policy
     query = _build_query(state)
@@ -53,7 +71,7 @@ def run_policy_explanation(state: PipelineState, llm=None, retriever=None) -> Pi
         ("human", _build_user_prompt(state, excerpts)),
     ]
     response = llm.invoke(messages)
-    explanation = response.content if hasattr(response, "content") else str(response)
+    explanation = _extract_text(response)
 
     sources = sorted({source for _, source in excerpts})
 

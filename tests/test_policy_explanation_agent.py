@@ -1,6 +1,6 @@
 from agents.policy_explanation_agent import run_policy_explanation
 from agents.schemas import RiskFactor
-from tests.conftest import FakeLLM, fake_retriever
+from tests.conftest import FakeLLM, FakeLLMResponse, fake_retriever
 
 
 def _base_state():
@@ -33,3 +33,29 @@ def test_prompt_excludes_demographic_factors():
     user_prompt = llm.last_messages[1][1]
     assert "PAY_0" in user_prompt
     assert "SEX" not in user_prompt
+
+
+class _StubLLM:
+    """Mimics a thinking-model response where content is a list of blocks
+    with an internal thought-signature under extras, not a plain string."""
+
+    def __init__(self, content):
+        self.content = content
+
+    def invoke(self, messages):
+        return FakeLLMResponse(self.content)
+
+
+def test_thought_signature_is_stripped_from_explanation():
+    llm = _StubLLM(content=[
+        {
+            "type": "text",
+            "text": "Recent payment status is driving this assessment.",
+            "extras": {"signature": "abc123-internal-thought-signature"},
+        }
+    ])
+    state = run_policy_explanation(_base_state(), llm=llm, retriever=fake_retriever)
+
+    assert state["policy_explanation"] == "Recent payment status is driving this assessment."
+    assert "signature" not in state["policy_explanation"]
+    assert "extras" not in state["policy_explanation"]
